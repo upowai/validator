@@ -58,15 +58,25 @@ The script will check if Redis is already installed on your system and proceed w
 
 ## Installation
 
-1. Clone this repository to your local machine or server.
-2. Ensure Python 3.8+ is installed.
-3. Install the required Python packages:
+1. **Clone the Repository:**
 
-```bash
-pip install -r requirements.txt
-```
+   ```bash
+   git clone https://github.com/upowai/validator.git
+   ```
 
-4. Review and update the `config.py` file with your specific settings.
+2. **Navigate to the Project Directory:**
+
+   ```bash
+   cd validator
+   ```
+
+3. **Install Dependencies:**
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Review and update the `config.py` file with your specific settings.**
 
 5. **Configure MongoDB and Redis:**
 
