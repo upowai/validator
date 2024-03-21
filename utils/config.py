@@ -20,7 +20,7 @@ INODE_PORT = 65432
 INODE_BUFFER = 1024
 PRIVATEKEY = env.PRIVATEKEY
 API_URL = "https://api.upow.ai"
-TRACK = 500
+TRACK = 15616
 CORE_URL = "https://api.upow.ai"
 
 # Validator Configuration settings
