@@ -84,7 +84,7 @@ The script will check if Redis is already installed on your system and proceed w
    - Update the MongoDB connection URL and database details in `database/mongodb.py` if necessary.
 
 6. **Set Up Environment Variables:**
-   - Optionally, set up environment variables for configuration parameters.
+   - Set up environment variables for configuration parameters.
 
 ## Running the Validator
 
