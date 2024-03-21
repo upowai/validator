@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Check if MongoDB is already installed by checking for mongod command
+if mongod --version &> /dev/null; then
+    echo "MongoDB is already installed."
+    exit 0
+fi
+
 # Install necessary packages
 sudo apt install software-properties-common gnupg apt-transport-https ca-certificates -y
 
@@ -19,8 +25,9 @@ sudo apt install mongodb-org -y
 sudo systemctl start mongod
 sudo systemctl enable mongod
 
-# Check MongoDB service status
-sudo systemctl status mongod
+# Optionally, check MongoDB service status
+# sudo systemctl status mongod --no-pager
 
+echo "MongoDB installation and setup completed."
 # Display MongoDB version
 mongod --version
