@@ -15,16 +15,16 @@ env = Env()
 
 # Inode Configuration settings
 
-INODE_IP = "127.0.0.1"
+INODE_IP = "152.53.3.235"
 INODE_PORT = 65432
 INODE_BUFFER = 1024
 PRIVATEKEY = env.PRIVATEKEY
-API_URL = "http://127.0.0.1:3006"
+API_URL = "https://api.upow.ai"
 TRACK = 500
-CORE_URL = "http://127.0.0.1:3006"
+CORE_URL = "https://api.upow.ai"
 
 # Validator Configuration settings
-VALIDATOR_IP = "127.0.0.1"
+VALIDATOR_IP = "152.53.2.46"
 VALIDATOR_PORT = 5503
 CHECK_INTERVAL = 60
 VALIDATOR_WALLET_ADDRESS = "DZ3hFKMTXnTHWtG8pRquCDfGBnSShfDwTKKzkoibvb3NA"
