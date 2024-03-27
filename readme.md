@@ -15,25 +15,27 @@ Before setting up the Validator Server, ensure you have the following installed:
 
 Before you start, ensure you have correctly set up your environment. The `config.py` file contains essential settings that you must review and configure according to your setup.
 
+Please check envExample file to set `.env`
+
 ### Inode Configuration
 
-- `INODE_IP`: The IP address of the inode server. Default is `127.0.0.1`.
-- `INODE_PORT`: The port on which the inode server is running. Default is `65432`.
+- `INODE_IP`: The IP address of the inode server.
+- `INODE_PORT`: The port on which the inode server is running.
 - `INODE_BUFFER`: Buffer size for inode communications. Default is `1024`.
 - `PRIVATEKEY`: Your validator node's private key.
-- `API_URL`: The URL of the API server. Default is `http://127.0.0.1:3006`.
-- `TRACK`: The starting block height for processing. Default is `500`.
-- `CORE_URL`: The URL of the node. Default is `http://127.0.0.1:3006`.
+- `API_URL`: The URL of the API server.
+- `TRACK`: The starting block height for processing.
+- `CORE_URL`: The URL of the node.
 
 ### Validator Configuration
 
-- `VALIDATOR_IP`: The IP address for the validator node. Default is `127.0.0.1`.
-- `VALIDATOR_PORT`: The port for the validator node. Default is `5503`.
-- `CHECK_INTERVAL`: Time interval (in seconds) for checking new transactions. Default is `60`.
+- `VALIDATOR_IP`: The IP address for the validator node.
+- `VALIDATOR_PORT`: The port for the validator node.
+- `CHECK_INTERVAL`: Time interval (in seconds) for checking new transactions.
 - `VALIDATOR_WALLET_ADDRESS`: Your validator wallet address.
 - `VALIDATOR_REWARD_WALLET_ADDRESS`: The wallet address for distributing Validator Fee. (18%)
-- `FAST_API_URL`: The host address for FastAPI. Default is `0.0.0.0`.
-- `FAST_API_PORT`: The port for FastAPI. Default is `8002`.
+- `FAST_API_URL`: The host address for FastAPI.
+- `FAST_API_PORT`: The port for FastAPI.
 
 ## Installing Redis
 

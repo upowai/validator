@@ -18,7 +18,40 @@ from database.database import r
 from database.mongodb import test_db_connection
 from database.database import test_redis_connection
 from api.api_client import test_api_connection
+from dotenv import load_dotenv
+import os
 
+
+dotenv_path = ".env"
+load_dotenv(dotenv_path)
+
+validator_private_key = os.getenv("PRIVATEKEY")
+if validator_private_key is None:
+    print(
+        "Validator PRIVATEKEY not found. Please check readme.md to set the PRIVATEKEY in the .env variable."
+    )
+    exit(0)
+
+validator_wallet_address = os.getenv("VALIDATORWALLETADDRESS")
+if validator_wallet_address is None:
+    print(
+        "Validator VALIDATORWALLETADDRESS not found. Please check readme.md to set the VALIDATORWALLETADDRESS in the .env variable."
+    )
+    exit(1)
+
+validator_reward_address = os.getenv("VALIDATORREWARDWALLETADDRESS")
+if validator_reward_address is None:
+    print(
+        "Validator VALIDATORREWARDWALLETADDRESS not found. Please check readme.md to set the VALIDATORREWARDWALLETADDRESS in the .env variable."
+    )
+    exit(2)
+
+validator_ip = os.getenv("VALIDATORIP")
+if validator_ip is None:
+    print(
+        "Validator VALIDATORIP not found. Please check readme.md to set the VALIDATORIP in the .env variable."
+    )
+    exit(3)
 
 app = FastAPI()
 

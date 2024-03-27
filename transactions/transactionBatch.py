@@ -10,6 +10,7 @@ from database.mongodb import (
     validatorTransactionsPushed,
 )
 from api.push import send_transaction
+from decimal import Decimal, ROUND_DOWN
 
 
 logging.basicConfig(
@@ -24,7 +25,12 @@ async def sign_and_push_transactions(transactions):
             wallet_address = transaction.get("wallet_address")
             transaction_type = transaction.get("type")
             id = transaction.get("id")
-            amounts = str(transaction.get("new_balance"))
+            new_balance = transaction.get("new_balance")
+            amounts = str(
+                Decimal(new_balance).quantize(
+                    Decimal("0.00000001"), rounding=ROUND_DOWN
+                )
+            )
 
             message = ""
             try:
@@ -35,7 +41,14 @@ async def sign_and_push_transactions(transactions):
                     logging.info(f"transaction_hash: {transaction_hash}")
                     validatorTransactionsPushed.update_one(
                         {"wallet_address": wallet_address},
-                        {"$push": {"transactions": transaction_hash}},
+                        {
+                            "$push": {
+                                "transactions": {
+                                    "hash": transaction_hash,
+                                    "amount": amounts,
+                                }
+                            }
+                        },
                         upsert=True,
                     )
                 else:
