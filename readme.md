@@ -6,7 +6,7 @@ Welcome to the Upow Validator Node repository. This repository contains the code
 
 Before setting up the Validator Server, ensure you have the following installed:
 
-- Python 3.8 or higher
+- Python 3.10 or higher
 - MongoDB
 - Redis (See the "Installing Redis" section below for installation instructions)
 - Required Python libraries (listed in `requirements.txt`)
@@ -16,6 +16,12 @@ Before setting up the Validator Server, ensure you have the following installed:
 Before you start, ensure you have correctly set up your environment. The `config.py` file contains essential settings that you must review and configure according to your setup.
 
 Please check envExample file to set `.env`
+
+## Enable port for accepting connections (Ubuntu)
+
+```bash
+  sudo ufw allow 5503
+```
 
 ### Inode Configuration
 
@@ -43,20 +49,31 @@ To ensure Redis is installed and properly configured on your system, you can use
 
 ### macOS and Ubuntu
 
-1. **Download the Script:**
-
-   - Download the `install_redis.sh` script from the provided repository or copy it into a new file on your system.
-
-2. **Make the Script Executable:**
+1. **Make the Script Executable:**
 
    - Open a terminal and navigate to the directory containing the `install_redis.sh` script.
    - Run the command `chmod +x install_redis.sh` to make the script executable.
 
-3. **Run the Script:**
+2. **Run the Script:**
    - Execute the script by running `./install_redis.sh` in the terminal.
    - If necessary, the script will ask for your password to grant permission for installation steps that require superuser access.
 
 The script will check if Redis is already installed on your system and proceed with the installation if it is not. It also ensures that Redis is set to start on boot.
+
+## Installing Mongodb
+
+To Install Mongodb on Ubuntu you can use the `install_mongodb.sh` script.
+
+### Ubuntu
+
+1. **Make the Script Executable:**
+
+   - Open a terminal and navigate to the directory containing the `install_mongodb.sh` script.
+   - Run the command `chmod +x install_mongodb.sh` to make the script executable.
+
+2. **Run the Script:**
+   - Execute the script by running `./install_mongodb.sh` in the terminal.
+   - If necessary, the script will ask for your password to grant permission for installation steps that require superuser access.
 
 ## Installation
 
@@ -75,7 +92,7 @@ The script will check if Redis is already installed on your system and proceed w
 3. **Install Dependencies:**
 
    ```bash
-   pip install -r requirements.txt
+   pip3 install -r requirements.txt
    ```
 
 4. **Review and update the `config.py` file with your specific settings.**
@@ -95,7 +112,7 @@ To start
 the validator node, navigate to the repository's root directory and execute the following command:
 
 ```bash
-python validator.py
+python3 validator.py
 ```
 
 This command starts the FastAPI server and initializes the validator node, allowing it to begin processing transactions and performing its duties within the Upow network.
