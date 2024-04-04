@@ -41,6 +41,13 @@ if validator_ip is None:
     )
     exit(3)
 
+validator_track_block = os.getenv("TRACKBLOCK")
+if validator_track_block is None:
+    print(
+        "Validator TRACKBLOCK not found. Please check readme.md to set the TRACKBLOCK in the .env variable."
+    )
+    exit(4)
+
 # Inode Configuration settings
 
 INODE_IP = "152.53.3.235"
@@ -48,7 +55,7 @@ INODE_PORT = 65432
 INODE_BUFFER = 1024
 PRIVATEKEY = env.PRIVATEKEY
 API_URL = "https://api.upow.ai"
-TRACK = 15616
+TRACK = env.TRACKBLOCK
 CORE_URL = "https://api.upow.ai"
 
 # Validator Configuration settings
