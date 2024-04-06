@@ -37,6 +37,7 @@ async def sign_and_push_transactions(transactions):
                 transaction_hash = await send_transaction(
                     private_key, wallet_address, amounts, message
                 )
+                logging.info(f"transaction_hash {transaction_hash}")
                 if transaction_hash:
                     logging.info(f"transaction_hash: {transaction_hash}")
                     validatorTransactionsPushed.update_one(
