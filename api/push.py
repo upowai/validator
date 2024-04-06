@@ -21,13 +21,7 @@ async def push_tx(tx, wallet_utils: Utils):
         r = requests.get(
             f"{wallet_utils.NODE_URL}/push_tx", {"tx_hex": tx.hex()}, timeout=10
         )
-        try:
-            r.raise_for_status()
-        except HTTPError as http_err:
-            if r.status_code == 414:
-                raise Exception("URI Too Long for url: " + r.url) from http_err
-            else:
-                raise
+        r.raise_for_status()
         res = r.json()
         if res["ok"]:
             transaction_hash = sha256(tx.hex())
@@ -35,10 +29,10 @@ async def push_tx(tx, wallet_utils: Utils):
             return transaction_hash
         else:
             logging.error("\nTransaction has not been pushed")
-            return None
+            return "Transaction not pushed", None
     except Exception as e:
         logging.error(f"Error during request to node: {e}")
-        return None
+        return str(e), None
 
 
 # async def push_tx(tx, wallet_utils: Utils):
@@ -79,4 +73,8 @@ async def send_transaction(private_key_hex, recipients, amounts, message=None):
         tx = await wallet_utils.create_transaction(
             private_key, receiver, amount, message_bytes
         )
-    return await push_tx(tx, wallet_utils)  # Ensure this returns the hash
+    error_message, transaction_hash = await push_tx(tx, wallet_utils)
+    if transaction_hash:
+        return transaction_hash
+    else:
+        raise Exception(error_message)
