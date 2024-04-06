@@ -26,7 +26,7 @@ async def push_tx(tx, wallet_utils: Utils):
         if res["ok"]:
             transaction_hash = sha256(tx.hex())
             logging.info(f"Transaction pushed. Transaction hash: {transaction_hash}")
-            return transaction_hash
+            return None, transaction_hash
         else:
             logging.error("\nTransaction has not been pushed")
             return "Transaction not pushed", None
