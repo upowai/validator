@@ -1,5 +1,6 @@
 import logging
 import requests
+from requests.exceptions import RequestException
 from upow_transactions.helpers import sha256
 from utils.utils import Utils
 
@@ -15,23 +16,52 @@ def string_to_bytes(string: str) -> bytes:
         return string.encode("utf-8")
 
 
-async def push_tx(tx, wallet_utils: Utils):
+# async def push_tx(tx, wallet_utils: Utils):
+#     try:
+#         r = requests.get(
+#             f"{wallet_utils.NODE_URL}/push_tx", {"tx_hex": tx.hex()}, timeout=10
+#         )
+#         r.raise_for_status()
+#         res = r.json()
+#         if res["ok"]:
+#             transaction_hash = sha256(tx.hex())
+#             logging.info(f"Transaction pushed. Transaction hash: {transaction_hash}")
+#             return transaction_hash  # Return the hash here
+#         else:
+#             logging.error("\nTransaction has not been pushed")
+#             return None  # Or handle this case as needed
+#     except Exception as e:
+#         logging.error(f"Error during request to node: {e}")
+#         return None  # Or handle this case as needed
+
+
+async def push_tx(tx, wallet_utils):
     try:
         r = requests.get(
-            f"{wallet_utils.NODE_URL}/push_tx", {"tx_hex": tx.hex()}, timeout=10
+            f"{wallet_utils.NODE_URL}/push_tx", params={"tx_hex": tx.hex()}, timeout=10
         )
-        r.raise_for_status()
+        r.raise_for_status()  # This will raise an exception for HTTP error codes
         res = r.json()
-        if res["ok"]:
-            transaction_hash = sha256(tx.hex())
+        if res.get("ok"):
+            transaction_hash = sha256(
+                tx.hex().encode("utf-8")
+            ).hexdigest()  # Ensure correct hash calculation
             logging.info(f"Transaction pushed. Transaction hash: {transaction_hash}")
-            return transaction_hash  # Return the hash here
+            return transaction_hash
         else:
-            logging.error("\nTransaction has not been pushed")
-            return None  # Or handle this case as needed
-    except Exception as e:
-        logging.error(f"Error during request to node: {e}")
-        return None  # Or handle this case as needed
+            logging.error("Transaction has not been pushed")
+            return None
+    except RequestException as e:
+        if e.response:
+            if e.response.status_code == 414:
+                logging.error(
+                    "URI Too Long for URL. Consider splitting the transaction."
+                )
+            else:
+                logging.error(f"HTTP error during request to node: {e}")
+        else:
+            logging.error(f"Error during request to node: {e}")
+        return None
 
 
 async def send_transaction(private_key_hex, recipients, amounts, message=None):
