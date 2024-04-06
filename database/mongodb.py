@@ -28,3 +28,4 @@ validatorProcessedTransaction = db.validatorProcessedTransaction
 validatorTransactionsCollection = db.validatorTransactionsCollection
 validatorTransactionsPushed = db.validatorTransactionsPushed
 validatorBalanceUpdateData = db.validatorBalanceUpdateData
+errorTransaction = db.errorTransaction

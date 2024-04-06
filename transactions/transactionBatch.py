@@ -8,6 +8,7 @@ import utils.config as config
 from database.mongodb import (
     validatorTransactionsCollection,
     validatorTransactionsPushed,
+    errorTransaction,
 )
 from api.push import send_transaction
 from decimal import Decimal, ROUND_DOWN
@@ -55,6 +56,18 @@ async def sign_and_push_transactions(transactions):
                 else:
                     logging.error(
                         f"Transaction failed for wallet address {wallet_address}. No hash was returned."
+                    )
+                    errorTransaction.update_one(
+                        {"wallet_address": wallet_address},
+                        {
+                            "$push": {
+                                "transactions": {
+                                    "error": transaction_hash,
+                                    "amount": amounts,
+                                }
+                            }
+                        },
+                        upsert=True,
                     )
             except Exception as e:
                 logging.error(f"Caught exception: {str(e)}")
