@@ -56,8 +56,8 @@ async def sign_and_push_transactions(transactions):
                         f"Transaction failed for wallet address {wallet_address}. No hash was returned."
                     )
             except Exception as e:
+                logging.error(f"Caught exception: {str(e)}")
                 error_message = str(e)
-                print("error_message", error_message)
                 if "You can spend max 255 inputs" in error_message:
                     num_inputs = int(error_message.split("not ")[-1])
                     max_inputs = 255
