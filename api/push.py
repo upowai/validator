@@ -1,5 +1,6 @@
 import logging
 import requests
+from requests.exceptions import HTTPError
 from upow_transactions.helpers import sha256
 from utils.utils import Utils
 
@@ -25,13 +26,20 @@ async def push_tx(tx, wallet_utils: Utils):
         if res["ok"]:
             transaction_hash = sha256(tx.hex())
             logging.info(f"Transaction pushed. Transaction hash: {transaction_hash}")
-            return transaction_hash  # Return the hash here
+            return transaction_hash
         else:
             logging.error("\nTransaction has not been pushed")
-            return None  # Or handle this case as needed
+            return None
+    except HTTPError as http_err:
+
+        if http_err.response.status_code == 414:
+            logging.error("URI Too Long for url: The request URL is too long.")
+            return None
+        else:
+            logging.error(f"HTTP error occurred: {http_err}")
     except Exception as e:
         logging.error(f"Error during request to node: {e}")
-        return None  # Or handle this case as needed
+        return None
 
 
 async def send_transaction(private_key_hex, recipients, amounts, message=None):
