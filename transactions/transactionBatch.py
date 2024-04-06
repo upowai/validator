@@ -57,6 +57,7 @@ async def sign_and_push_transactions(transactions):
                     )
             except Exception as e:
                 error_message = str(e)
+                print("error_message", error_message)
                 if "You can spend max 255 inputs" in error_message:
                     num_inputs = int(error_message.split("not ")[-1])
                     max_inputs = 255
