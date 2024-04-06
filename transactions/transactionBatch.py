@@ -70,11 +70,21 @@ async def sign_and_push_transactions(transactions):
                             wallet_address, split_amount, f"split_{transaction_type}"
                         )
 
-                    # Remove the original transaction that exceeded the input limit
+                    validatorTransactionsCollection.delete_one({"id": id})
+                elif "URI Too Long for url:" in error_message:
+                    split_amount = float(amounts) / 2
+                    logging.info(
+                        f"Splitting transaction for {wallet_address} into 2 parts due to URI length limit."
+                    )
+                    for _ in range(2):
+                        add_transaction_to_batch(
+                            wallet_address, split_amount, f"split_{transaction_type}"
+                        )
+
                     validatorTransactionsCollection.delete_one({"id": id})
                 else:
                     logging.error(
-                        f"Error during transaction processing for {wallet_address}: {e}"
+                        f"Error during transaction processing for {wallet_address}: {error_message}"
                     )
 
         # Remove successfully processed transactions from the MongoDB collection
