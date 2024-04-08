@@ -113,6 +113,7 @@ To Install Mongodb on Ubuntu you can use the `install_mongodb.sh` script.
       VALIDATORIP=ipaddress
       VALIDATORWALLETADDRESS=validator_address
       VALIDATORREWARDWALLETADDRESS=reward_address
+      INODEIP=192.99.7.175
       TRACKBLOCK=10000
       REDISHOST=localhost
       REDISPORT=6379
