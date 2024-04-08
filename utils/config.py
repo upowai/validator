@@ -77,7 +77,7 @@ if validator_inode_ip is None:
     print(
         "Validator INODEIP not found. Please check readme.md to set the INODEIP in the .env variable."
     )
-    exit(7)
+    exit(8)
 
 # Inode Configuration settings
 
