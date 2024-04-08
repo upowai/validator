@@ -48,9 +48,40 @@ if validator_track_block is None:
     )
     exit(4)
 
+
+validator_redis_host = os.getenv("REDISHOST")
+if validator_redis_host is None:
+    print(
+        "Validator REDISHOST not found. Please check readme.md to set the REDISHOST in the .env variable."
+    )
+    exit(5)
+
+
+validator_redis_port = os.getenv("REDISPORT")
+if validator_redis_port is None:
+    print(
+        "Validator REDISPORT not found. Please check readme.md to set the REDISPORT in the .env variable."
+    )
+    exit(6)
+
+
+validator_redis_db = os.getenv("REDISDB")
+if validator_redis_db is None:
+    print(
+        "Validator REDISDB not found. Please check readme.md to set the REDISDB in the .env variable."
+    )
+    exit(7)
+
+validator_inode_ip = os.getenv("INODEIP")
+if validator_inode_ip is None:
+    print(
+        "Validator INODEIP not found. Please check readme.md to set the INODEIP in the .env variable."
+    )
+    exit(7)
+
 # Inode Configuration settings
 
-INODE_IP = "152.53.3.235"
+INODE_IP = env.INODEIP
 INODE_PORT = 65432
 INODE_BUFFER = 1024
 PRIVATEKEY = env.PRIVATEKEY
@@ -66,3 +97,8 @@ VALIDATOR_WALLET_ADDRESS = env.VALIDATORWALLETADDRESS
 VALIDATOR_REWARD_WALLET_ADDRESS = env.VALIDATORREWARDWALLETADDRESS
 FAST_API_URL = "0.0.0.0"
 FAST_API_PORT = 8002
+
+# redus database configurations
+REDIS_HOST = env.REDISHOST
+REDIS_PORT = env.REDISPORT
+REDIS_DB = env.REDISDB
