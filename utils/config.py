@@ -79,15 +79,23 @@ if validator_inode_ip is None:
     )
     exit(8)
 
+validator_mongodburi = os.getenv("MONGODB")
+if validator_mongodburi is None:
+    print(
+        "Validator MONGODB not found. Please check readme.md to set the MONGODB in the .env variable."
+    )
+    exit(9)
+
+
 # Inode Configuration settings
 
 INODE_IP = env.INODEIP
 INODE_PORT = 65432
 INODE_BUFFER = 1024
 PRIVATEKEY = env.PRIVATEKEY
-API_URL = "https://api.upow.ai"
+API_URL = "http://127.0.0.1:3006"
 TRACK = env.TRACKBLOCK
-CORE_URL = "https://api.upow.ai"
+CORE_URL = "http://127.0.0.1:3006"
 
 # Validator Configuration settings
 VALIDATOR_IP = env.VALIDATORIP
@@ -102,3 +110,6 @@ FAST_API_PORT = 8002
 REDIS_HOST = env.REDISHOST
 REDIS_PORT = env.REDISPORT
 REDIS_DB = env.REDISDB
+
+# Mongodb
+MONGO_DB = env.MONGODB

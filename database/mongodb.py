@@ -1,12 +1,11 @@
-# db_connection.py
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure
-
+import utils.config as config
 
 def test_db_connection():
     try:
         client = MongoClient(
-            "mongodb://localhost:27017/", serverSelectionTimeoutMS=5000
+            config.MONGO_DB, serverSelectionTimeoutMS=5000
         )
 
         client.admin.command("ping")
@@ -18,7 +17,7 @@ def test_db_connection():
 
 
 def get_db_connection():
-    client = MongoClient("mongodb://localhost:27017/")
+    client = MongoClient(config.MONGO_DB)
     return client.validator
 
 
@@ -29,3 +28,5 @@ validatorTransactionsCollection = db.validatorTransactionsCollection
 validatorTransactionsPushed = db.validatorTransactionsPushed
 validatorBalanceUpdateData = db.validatorBalanceUpdateData
 errorTransaction = db.errorTransaction
+catchTransaction = db.catchTransaction
+pushHistory = db.pushHistory

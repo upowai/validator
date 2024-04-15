@@ -9,6 +9,8 @@ from database.mongodb import (
     validatorTransactionsCollection,
     validatorTransactionsPushed,
     errorTransaction,
+    catchTransaction,
+    pushHistory,
 )
 from api.push import send_transaction
 from decimal import Decimal, ROUND_DOWN
@@ -35,6 +37,19 @@ async def sign_and_push_transactions(transactions):
 
             message = ""
             try:
+                pushHistory.update_one(
+                    {"wallet_address": wallet_address},
+                    {
+                        "$push": {
+                            "transactions": {
+                                "transaction_type": transaction_type,
+                                "amount": amounts,
+                                "timestamp": datetime.utcnow(),
+                            }
+                        }
+                    },
+                    upsert=True,
+                )
                 transaction_hash = await send_transaction(
                     private_key, wallet_address, amounts, message
                 )
@@ -48,6 +63,7 @@ async def sign_and_push_transactions(transactions):
                                 "transactions": {
                                     "hash": transaction_hash,
                                     "amount": amounts,
+                                    "timestamp": datetime.utcnow(),
                                 }
                             }
                         },
@@ -64,6 +80,7 @@ async def sign_and_push_transactions(transactions):
                                 "transactions": {
                                     "error": transaction_hash,
                                     "amount": amounts,
+                                    "timestamp": datetime.utcnow(),
                                 }
                             }
                         },
@@ -97,9 +114,30 @@ async def sign_and_push_transactions(transactions):
                         )
 
                     validatorTransactionsCollection.delete_one({"id": id})
+                elif "HTTPConnectionPool" in error_message:
+                    logging.info(
+                        f"Failed to connect with blockchain so adding transaction for reprocessing {wallet_address} ."
+                    )
+                    add_transaction_to_batch(
+                            wallet_address, amounts, f"retry_HTTPConnectionPool"
+                        )
+                    validatorTransactionsCollection.delete_one({"id": id})
                 else:
                     logging.error(
                         f"Error during transaction processing for {wallet_address}: {error_message}"
+                    )
+                    catchTransaction.update_one(
+                        {"wallet_address": wallet_address},
+                        {
+                            "$push": {
+                                "transactions": {
+                                    "error": error_message,
+                                    "amount": amounts,
+                                    "timestamp": datetime.utcnow(),
+                                }
+                            }
+                        },
+                        upsert=True,
                     )
 
         # Remove successfully processed transactions from the MongoDB collection
@@ -126,7 +164,7 @@ def process_all_transactions():
             unique_transactions[wallet_address] = transaction
 
         # Get the first 5 unique transactions based on the sorted order by timestamp
-        pending_transactions = list(unique_transactions.values())[:5]
+        pending_transactions = list(unique_transactions.values())[:15]
 
         if pending_transactions:
             # Since sign_and_push_transactions is an async function,
