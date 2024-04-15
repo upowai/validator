@@ -93,9 +93,9 @@ INODE_IP = env.INODEIP
 INODE_PORT = 65432
 INODE_BUFFER = 1024
 PRIVATEKEY = env.PRIVATEKEY
-API_URL = "http://127.0.0.1:3006"
+API_URL = "https://api.upow.ai"
 TRACK = env.TRACKBLOCK
-CORE_URL = "http://127.0.0.1:3006"
+CORE_URL = "https://api.upow.ai"
 
 # Validator Configuration settings
 VALIDATOR_IP = env.VALIDATORIP
