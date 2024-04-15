@@ -21,6 +21,10 @@ from api.api_client import test_api_connection
 from dotenv import load_dotenv
 import os
 
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
+
 
 dotenv_path = ".env"
 load_dotenv(dotenv_path)
@@ -54,7 +58,9 @@ if validator_ip is None:
     exit(3)
 
 app = FastAPI()
-
+limiter = Limiter(key_func=get_remote_address)
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 app.add_middleware(
     CORSMiddleware,
@@ -104,7 +110,8 @@ class DeductBalanceValidator(BaseModel):
 
 
 @app.get("/get_balance/")
-async def get_balance(wallet_address: str):
+@limiter.limit("10/minute")
+async def get_balance(wallet_address: str, request: Request):
     if not wallet_address:
         raise HTTPException(status_code=400, detail="Wallet address must be provided")
 
@@ -118,7 +125,8 @@ async def get_balance(wallet_address: str):
 
 
 @app.get("/get_balance_validatorowner/")
-async def poolowner_get_balance():
+@limiter.limit("10/minute")
+async def poolowner_get_balance(request: Request):
 
     balance = get_balance_validatorowner()
     if isinstance(balance, str) and balance.startswith("Error"):
@@ -131,6 +139,7 @@ async def poolowner_get_balance():
 
 
 @app.post("/deduct_balance/")
+@limiter.limit("10/minute")
 async def deduct_balance(
     request: Request,
     deduct_request: DeductBalanceRequest,
@@ -148,6 +157,7 @@ async def deduct_balance(
 
 
 @app.post("/validatorowner_deduct_balance/")
+@limiter.limit("10/minute")
 async def poolowner_deduct_balance(
     request: Request,
     deduct_request: DeductBalanceValidator,
@@ -165,7 +175,8 @@ async def poolowner_deduct_balance(
 
 
 @app.get("/latestwithdraws/")
-async def latest_withdraws(wallet_address: str):
+@limiter.limit("10/minute")
+async def latest_withdraws(wallet_address: str, request: Request):
     if not wallet_address:
         raise HTTPException(status_code=400, detail="Wallet address must be provided")
 
