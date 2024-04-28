@@ -49,8 +49,13 @@ def fetch_and_process_delegates():
                 else delegate_details
             )
             details = json.loads(delegate_details)
+            if not isinstance(details, dict) or "balance" not in details:
+                logging.error(
+                    f"Invalid delegate details format for wallet {wallet_address}: {details}"
+                )
+                continue
 
-            total_balance += details["balance"]
+            total_balance += float(details["balance"])
             table_data.append([wallet_address, details["balance"]])
         except json.JSONDecodeError:
             logging.warning(
