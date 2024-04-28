@@ -9,18 +9,6 @@ logging.basicConfig(
 )
 
 
-def parse_datetime(time_str_or_int):
-    formats = ["%Y-%m-%dT%H:%M:%S.%f", "%Y-%m-%d %H:%M:%S", "%Y-%m-%dT%H:%M:%S"]
-    if isinstance(time_str_or_int, int):
-        return datetime.fromtimestamp(time_str_or_int)
-    for fmt in formats:
-        try:
-            return datetime.strptime(time_str_or_int, fmt)
-        except ValueError:
-            continue
-    raise ValueError(f"Time data '{time_str_or_int}' does not match any known format")
-
-
 def fetch_and_process_delegates():
     try:
         if not test_redis_connection():
@@ -36,37 +24,21 @@ def fetch_and_process_delegates():
     total_balance = 0.0
     table_data = []
 
-    for wallet_address, delegate_details in delegates_list.items():
+    for wallet_address, balance in delegates_list.items():
         try:
             wallet_address = (
                 wallet_address.decode("utf-8")
                 if isinstance(wallet_address, bytes)
                 else wallet_address
             )
-            delegate_details = (
-                delegate_details.decode("utf-8")
-                if isinstance(delegate_details, bytes)
-                else delegate_details
-            )
-            details = json.loads(delegate_details)
-            if not isinstance(details, dict) or "balance" not in details:
-                logging.error(
-                    f"Invalid delegate details format for wallet {wallet_address}: {details}"
-                )
-                continue
+            balance = balance.decode("utf-8") if isinstance(balance, bytes) else balance
 
-            total_balance += float(details["balance"])
-            table_data.append([wallet_address, details["balance"]])
-        except json.JSONDecodeError:
-            logging.warning(
-                f"Error decoding JSON for wallet address {wallet_address}. Skipping..."
+            total_balance += float(balance)
+            table_data.append([wallet_address, balance])
+        except ValueError as e:
+            logging.error(
+                f"Error processing balance for wallet address {wallet_address}: {e}"
             )
-        except KeyError:
-            logging.warning(
-                f"Missing key in data for wallet address {wallet_address}. Skipping..."
-            )
-        except Exception as e:
-            logging.error(f"Unexpected error for wallet address {wallet_address}: {e}")
 
     validator_owner_balance = 0.0
     if validator_owner_details:
