@@ -86,6 +86,19 @@ if validator_mongodburi is None:
     )
     exit(9)
 
+validator_ratelimit1 = os.getenv("RATELIMIT1")
+if validator_ratelimit1 is None:
+    print(
+        "Validator RATELIMIT1 not found. Please check readme.md to set the RATELIMIT1 in the .env variable."
+    )
+    exit(10)
+
+validator_ratelimit2 = os.getenv("RATELIMIT2")
+if validator_ratelimit2 is None:
+    print(
+        "Validator RATELIMIT2 not found. Please check readme.md to set the RATELIMIT2 in the .env variable."
+    )
+    exit(10)
 
 # Inode Configuration settings
 
@@ -105,6 +118,8 @@ VALIDATOR_WALLET_ADDRESS = env.VALIDATORWALLETADDRESS
 VALIDATOR_REWARD_WALLET_ADDRESS = env.VALIDATORREWARDWALLETADDRESS
 FAST_API_URL = "0.0.0.0"
 FAST_API_PORT = 8002
+RATE_LIMIT1 = env.RATELIMIT1
+RATE_LIMIT2 = env.RATELIMIT2
 
 # redus database configurations
 REDIS_HOST = env.REDISHOST

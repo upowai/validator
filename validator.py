@@ -110,7 +110,7 @@ class DeductBalanceValidator(BaseModel):
 
 
 @app.get("/get_balance/")
-@limiter.limit("10/minute")
+@limiter.limit(config.RATE_LIMIT1)
 async def get_balance(wallet_address: str, request: Request):
     if not wallet_address:
         raise HTTPException(status_code=400, detail="Wallet address must be provided")
@@ -125,7 +125,7 @@ async def get_balance(wallet_address: str, request: Request):
 
 
 @app.get("/get_balance_validatorowner/")
-@limiter.limit("10/minute")
+@limiter.limit(config.RATE_LIMIT1)
 async def poolowner_get_balance(request: Request):
 
     balance = get_balance_validatorowner()
@@ -139,7 +139,7 @@ async def poolowner_get_balance(request: Request):
 
 
 @app.post("/deduct_balance/")
-@limiter.limit("10/minute")
+@limiter.limit(config.RATE_LIMIT1)
 async def deduct_balance(
     request: Request,
     deduct_request: DeductBalanceRequest,
@@ -157,7 +157,7 @@ async def deduct_balance(
 
 
 @app.post("/validatorowner_deduct_balance/")
-@limiter.limit("10/minute")
+@limiter.limit(config.RATE_LIMIT1)
 async def poolowner_deduct_balance(
     request: Request,
     deduct_request: DeductBalanceValidator,
@@ -175,7 +175,7 @@ async def poolowner_deduct_balance(
 
 
 @app.get("/latestwithdraws/")
-@limiter.limit("10/minute")
+@limiter.limit(config.RATE_LIMIT1)
 async def latest_withdraws(wallet_address: str, request: Request):
     if not wallet_address:
         raise HTTPException(status_code=400, detail="Wallet address must be provided")
