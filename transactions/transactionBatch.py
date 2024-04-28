@@ -14,6 +14,7 @@ from database.mongodb import (
 )
 from api.push import send_transaction
 from decimal import Decimal, ROUND_DOWN
+from api.api_client import test_api_connection
 
 
 logging.basicConfig(
@@ -42,6 +43,7 @@ async def sign_and_push_transactions(transactions):
                     {
                         "$push": {
                             "transactions": {
+                                "id": id,
                                 "transaction_type": transaction_type,
                                 "amount": amounts,
                                 "timestamp": datetime.utcnow(),
@@ -61,9 +63,11 @@ async def sign_and_push_transactions(transactions):
                         {
                             "$push": {
                                 "transactions": {
+                                    "id": id,
                                     "hash": transaction_hash,
                                     "amount": amounts,
                                     "timestamp": datetime.utcnow(),
+                                    "transaction_type": transaction_type,
                                 }
                             }
                         },
@@ -99,7 +103,9 @@ async def sign_and_push_transactions(transactions):
                     )
                     for _ in range(num_splits):
                         add_transaction_to_batch(
-                            wallet_address, split_amount, f"split_{transaction_type}"
+                            wallet_address,
+                            split_amount,
+                            f"utxos_split_{transaction_type}",
                         )
 
                     validatorTransactionsCollection.delete_one({"id": id})
@@ -110,17 +116,22 @@ async def sign_and_push_transactions(transactions):
                     )
                     for _ in range(2):
                         add_transaction_to_batch(
-                            wallet_address, split_amount, f"split_{transaction_type}"
+                            wallet_address,
+                            split_amount,
+                            f"url_split_{transaction_type}",
                         )
 
                     validatorTransactionsCollection.delete_one({"id": id})
-                elif "HTTPConnectionPool" in error_message:
+                elif (
+                    "HTTPConnectionPool" in error_message
+                    or "HTTPSConnectionPool" in error_message
+                ):
                     logging.info(
                         f"Failed to connect with blockchain so adding transaction for reprocessing {wallet_address} ."
                     )
                     add_transaction_to_batch(
-                            wallet_address, amounts, f"retry_HTTPConnectionPool"
-                        )
+                        wallet_address, amounts, f"retry_HTTPConnectionPool"
+                    )
                     validatorTransactionsCollection.delete_one({"id": id})
                 else:
                     logging.error(
@@ -131,6 +142,7 @@ async def sign_and_push_transactions(transactions):
                         {
                             "$push": {
                                 "transactions": {
+                                    "id": id,
                                     "error": error_message,
                                     "amount": amounts,
                                     "timestamp": datetime.utcnow(),
@@ -139,6 +151,10 @@ async def sign_and_push_transactions(transactions):
                         },
                         upsert=True,
                     )
+                    add_transaction_to_batch(
+                        wallet_address, amounts, f"CatchError_{id}"
+                    )
+                    validatorTransactionsCollection.delete_one({"id": id})
 
         # Remove successfully processed transactions from the MongoDB collection
         if transactions:
@@ -151,6 +167,9 @@ async def sign_and_push_transactions(transactions):
 
 
 def process_all_transactions():
+    if not test_api_connection(config.API_URL):
+        logging.warning("Blockchain may be down, no transactions pushed.")
+        return
     try:
         # Fetch all transactions and sort them by timestamp
         all_transactions = list(
