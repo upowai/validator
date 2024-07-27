@@ -3,7 +3,7 @@ import requests
 from database.database import r, test_redis_connection
 import logging
 
-logging.basicConfig(
+logging.basic_config(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
@@ -62,8 +62,9 @@ def main():
                 logging.info(
                     f"Deducted {amount_to_deduct} from {wallet_address}: {result}"
                 )
+                time.sleep(30)  # 30 seconds delay between each API call
 
-        time.sleep(60)
+        time.sleep(60)  # 60 seconds delay before next fetch
 
 
 if __name__ == "__main__":
