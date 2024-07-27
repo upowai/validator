@@ -3,7 +3,7 @@ import requests
 from database.database import r, test_redis_connection
 import logging
 
-logging.basic_config(
+logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
