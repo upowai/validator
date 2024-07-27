@@ -339,10 +339,10 @@ async def main():
     stop = asyncio.Future()
     balance_thread = threading.Thread(target=update_balance_periodically, daemon=True)
     fastapi_thread = threading.Thread(daemon=True, target=run_fastapi)
-    periodic_task = threading.Thread(target=periodic_process_transactions, daemon=True)
+    # periodic_task = threading.Thread(target=periodic_process_transactions, daemon=True)
     fastapi_thread.start()
     balance_thread.start()
-    periodic_task.start()
+    # periodic_task.start()
     server = await websockets.serve(
         handle_client, config.VALIDATOR_IP, config.VALIDATOR_PORT
     )
