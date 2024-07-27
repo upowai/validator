@@ -57,7 +57,9 @@ def main():
             logging.info("No delegates found with a balance greater than 1.")
         else:
             for wallet_address, balance in eligible_delegates:
-                amount_to_deduct = balance - 1  # Deducting amount to bring balance to 1
+                amount_to_deduct = round(
+                    balance - 1, 8
+                )  # Deducting amount to bring balance to 1
                 result = deduct_balance(wallet_address, amount_to_deduct)
                 logging.info(
                     f"Deducted {amount_to_deduct} from {wallet_address}: {result}"
